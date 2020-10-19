@@ -11,10 +11,10 @@ import formatar as fm
 import vagas as vg
 import inteira as it
 import constantes as cte
-import mount
 import control as ctrl
 import estado
 from collections import namedtuple
+
 
 def minutos_dia(momento):
     '''
@@ -22,6 +22,7 @@ def minutos_dia(momento):
         especificada pelo argumento (objeto datetime).
     '''
     return momento.hour*60 + momento.minute
+
 
 def gerar_id_linha(destino, horario):
     '''
@@ -33,6 +34,7 @@ def gerar_id_linha(destino, horario):
     h = '%04d' % minutos_dia(horario)
     id = '-'.join([d, h])
     return id
+
 
 def campos_linha_formatados(dados):
     '''
@@ -48,6 +50,7 @@ def campos_linha_formatados(dados):
     inteira = '%.2f' % ((300 + i)/100)
     return campus, horario, assentos, inteira
 
+
 def gerar_id_onibus(linha, partida):
     '''
         Gera um id para um ônibus com os dados dos argumentos.
@@ -56,6 +59,7 @@ def gerar_id_onibus(linha, partida):
     '''
     id = '-'.join([linha, partida.strftime('%d%m%y')])
     return id
+
 
 def decodificar_id_onibus(id):
     '''
@@ -67,6 +71,7 @@ def decodificar_id_onibus(id):
     partida = dt.datetime.strptime(p, '%d%m%y') + dt.timedelta(minutes=int(h))
     return partida
 
+
 def gerar_id_reserva(onibus, assento, passagem):
     '''
         Gera um id de uma reserva conforme os dados dos argumentos.
@@ -75,9 +80,12 @@ def gerar_id_reserva(onibus, assento, passagem):
     '''
     return '-'.join([onibus, '%03d' % assento, '%d' % passagem])
 
+
 # atributos dos objetos reserva e passagem
-estrutura_reserva = namedtuple('reserva', ['campus', 'partida', 'assento', 'passagem'])
+estrutura_reserva = namedtuple(
+    'reserva', ['campus', 'partida', 'assento', 'passagem'])
 estrutura_passagem = namedtuple('passagem', ['tipo', 'inteira'])
+
 
 def decodificar_id_reserva(reserva):
     '''
@@ -97,10 +105,12 @@ def decodificar_id_reserva(reserva):
     destino, h, p, assento, passagem = reserva.split('-', 5)
     partida = dt.datetime.strptime(p, '%d%m%y') + dt.timedelta(minutes=int(h))
     assento = int(assento)
-    passagem = int(passagem)  # 2 significa inteira, 1 significa meia, 0 significa gratuita
+    # 2 significa inteira, 1 significa meia, 0 significa gratuita
+    passagem = int(passagem)
     inteira = estado.linhas_entradas[linha].inteira
-    
+
     return estrutura_reserva(destino, partida, assento, estrutura_passagem(passagem, inteira))
+
 
 def campos_reserva_formatados(reserva):
     '''
@@ -113,8 +123,10 @@ def campos_reserva_formatados(reserva):
     campus = reserva.campus.title()
     partida = reserva.partida.strftime('%d/%m/%y %H:%M')
     assento = reserva.assento
-    passagem = '%8s: R$%s' % (cte.INDICE_PASSAGEM[reserva.passagem.tipo].title(), it.inteira_termo(reserva.passagem.inteira, reserva.passagem.tipo))
+    passagem = '%8s: R$%s' % (cte.INDICE_PASSAGEM[reserva.passagem.tipo].title(
+    ), it.inteira_termo(reserva.passagem.inteira, reserva.passagem.tipo))
     return campus, partida, assento, passagem
+
 
 def coordenadas_assento(assento, num_fileiras):
     '''
@@ -141,6 +153,7 @@ def coordenadas_assento(assento, num_fileiras):
         j = assento % 2 + 2
     return i, j
 
+
 def assento_coordenadas(i, j, num_fileiras):
     # Retorna o número do assento com base na posição (i, j)
     # Essa função faz basicamente o cálculo inverso da função "coordenadas_assento"
@@ -158,7 +171,7 @@ def gerar_linhas(app):
     limite = len(estado.linhas_possiveis)
     if limite == 0:
         messagebox.showwarning(title='Limite Atingido',
-                       message=f'Limite de cadastros atingido: {len(estado.linhas_entradas)}.')
+                               message=f'Limite de cadastros atingido: {len(estado.linhas_entradas)}.')
         return
 
     # Primeiro, definimos uma interface para coletar os dados
@@ -172,7 +185,8 @@ def gerar_linhas(app):
 
     frame = ttk.Frame(configuracoes)
     frame.grid(row=0, column=0, sticky='nsew')
-    configuracoes.rowconfigure(0, weight=1)  # frame é o único child de configurações
+    # frame é o único child de configurações
+    configuracoes.rowconfigure(0, weight=1)
     configuracoes.columnconfigure(0, weight=1)
 
     # ESTRUTURA VISUAL
@@ -197,8 +211,9 @@ def gerar_linhas(app):
     # indica a quantidade de linhas que o usuário pretende gerar
     num = tk.StringVar()
     # n = 99
-    termo = lambda n: n + 1
-    monitoradas.indice_linhas_geradas = min(monitoradas.indice_linhas_geradas, limite - 1)
+    def termo(n): return n + 1
+    monitoradas.indice_linhas_geradas = min(
+        monitoradas.indice_linhas_geradas, limite - 1)
     num.set(termo(monitoradas.indice_linhas_geradas))
 
     # as funções atualizar/incrementar/decrementar são parecidas com outras definidos para outras StringVar
@@ -238,7 +253,7 @@ def gerar_linhas(app):
         return 'break'
 
     # esse é o spinbox ao qual as funções acima se referem
-    spin_linhas = mount.Spinbox(frame,
+    spin_linhas = ttk.Spinbox(frame,
                               textvariable=num,
                               width=6,
                               justify='center')
@@ -248,7 +263,8 @@ def gerar_linhas(app):
 
     # O botão "Ocupar assentos"
     # o valor marcado será monitorado pela variável monitoradas.ocupar_assentos
-    check_ocupar_assentos = ttk.Checkbutton(frame, text='Ocupar assentos.', variable=monitoradas.ocupar_assentos)
+    check_ocupar_assentos = ttk.Checkbutton(
+        frame, text='Ocupar assentos.', variable=monitoradas.ocupar_assentos)
     check_ocupar_assentos.grid(row=2, column=0)
 
     frame.rowconfigure(1, weight=1)
@@ -271,7 +287,8 @@ def gerar_linhas(app):
         # Note que para cada linha, há 4 colunas (índice j varia de 0 a 3).
         # As colunas 0 e 3 são adjacentes à janela e as colunas 1 e 2 são adjacentes ao corredor.
         # Essa sequência pode ser vista ao tentar reservar um assento.
-        assento_coordenadas = lambda i, j: 2*i + j + 1 if j <= 1 else 2*(num_fileiras + i + 2) - j
+        def assento_coordenadas(i, j): return 2*i + j + \
+            1 if j <= 1 else 2*(num_fileiras + i + 2) - j
         dados = []
         data_atual = monitoradas.data_atual
         minutos_atual = data_atual.hour*60 + data_atual.minute
@@ -289,25 +306,27 @@ def gerar_linhas(app):
             if data_atual > horario:
                 horario += dt.timedelta(1)
             linha = gerar_id_linha(destino, horario)
-            
+
             indice_vagas = choice(range(cte.MAXIMO_NUMERO_DE_FILEIRAS))
             num_fileiras = indice_vagas + 1
             vagas = vg.vagas_termo(indice_vagas)
             indice_inteira = choice(range(301))
             inteira = it.inteira_termo(indice_inteira)
-            
-            estado.horarios_linhas[t] = estado.horarios_linhas.get(t, set()).union({linha})
+
+            estado.horarios_linhas[t] = estado.horarios_linhas.get(
+                t, set()).union({linha})
 
             app.linhas.insert(parent='',
-                                index=0,
-                                values=(destino, fm.form_tempo(horario), vagas, inteira),
-                                iid=linha)
-            estado.linhas_entradas[linha] = cte.ESTRUTURA_LINHA(destino, horario, num_fileiras, indice_inteira, dict())
+                              index=0,
+                              values=(destino, fm.form_tempo(
+                                  horario), vagas, inteira),
+                              iid=linha)
+            estado.linhas_entradas[linha] = cte.ESTRUTURA_LINHA(
+                destino, horario, num_fileiras, indice_inteira, dict())
             estado.linhas_visiveis.add(linha)
 
             reservas = list()
-            
-            
+
             # calculamos o período de dias em que haverá ônibus partindo
             if t == minutos_atual:
                 periodo = range(cte.MAXIMO_NUMERO_DE_DIAS_ATE_RESERVA + 1)
@@ -323,10 +342,11 @@ def gerar_linhas(app):
             for d in periodo:
                 # para cada dia no período calculado, vamos adicionar um ônibus
                 # note que d = 0 representa o dia de hoje, d = 1 é amanhã, etc.
-                partida = data_atual + dt.timedelta(d)            
+                partida = data_atual + dt.timedelta(d)
                 onibus = gerar_id_onibus(linha, partida)
                 assentos_disponiveis = randrange(vagas+1) if ocupar else vagas
-                app.linhas.insert(parent=linha, index='end', values=('-', fm.form_data(partida), assentos_disponiveis , '-'), iid=onibus)
+                app.linhas.insert(parent=linha, index='end', values=(
+                    '-', fm.form_data(partida), assentos_disponiveis, '-'), iid=onibus)
                 estado.linhas_entradas[linha].onibus[onibus] = dict()
                 if assentos_disponiveis < vagas:
                     # nesse caso, significa que o usuário pediu para "Ocupar assentos"
@@ -345,7 +365,7 @@ def gerar_linhas(app):
                     # e a segunda posição é um assento da seção da direita
                     # e selecionamos dois assentos por linha
                     assentos_visiveis = {assento_coordenadas(i, 2 * j + (i + shift) % 2) for j in range(2)
-                                for i in range(num_fileiras)}
+                                         for i in range(num_fileiras)}
                     # a função sample seleciona aleatoriamente números de assentos escolhíveis para
                     # fazermos reserva
                     for assento in sample(assentos_visiveis, vagas - assentos_disponiveis):
@@ -357,12 +377,11 @@ def gerar_linhas(app):
                         estado.reservas.add(reserva)
                         reservas.insert(0, reserva)
                         app.reservas.insert(parent='',
-                                        index=0,
-                                        values=campos_reserva_formatados(reserva),
-                                        iid=reserva)
+                                            index=0,
+                                            values=campos_reserva_formatados(
+                                                reserva),
+                                            iid=reserva)
                 monitoradas.onibus_visiveis.add(onibus)
-
-        
 
             dados.append([estado.linhas_entradas[linha], reservas])
 
@@ -373,9 +392,12 @@ def gerar_linhas(app):
         historico_redo.clear()
         historico_undo.append(['add', dados])
 
-        app.contador_linhas['text'] = fm.form_cont_linhas(len(estado.linhas_visiveis))
-        app.contador_onibus['text'] = fm.form_cont_onibus(len(monitoradas.onibus_visiveis))
-        app.contador_reservas['text'] = fm.form_cont_reservas(len(estado.reservas))
+        app.contador_linhas['text'] = fm.form_cont_linhas(
+            len(estado.linhas_visiveis))
+        app.contador_onibus['text'] = fm.form_cont_onibus(
+            len(monitoradas.onibus_visiveis))
+        app.contador_reservas['text'] = fm.form_cont_reservas(
+            len(estado.reservas))
         configuracoes.destroy()
 
     botao_gerar = ttk.Button(frame, text='Gerar', command=gerar)

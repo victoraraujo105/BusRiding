@@ -8,9 +8,9 @@ from control import update_action
 import datetime as dt
 import formatar as fm
 import constantes as cte
-import mount
 import estado
 import tkinter as tk
+
 
 def increment(app, interval):
     '''
@@ -39,6 +39,7 @@ def decrement(app, interval):
     # o valor de retorno sinaliza ao sistema de eventos que a propagação desse evento deve parar aqui
     return 'break'
 
+
 def update(app):
     '''
         Valida o valor escrito pelo usuário no texto do horário.
@@ -52,13 +53,15 @@ def update(app):
     try:
         tempo_bruto = spin_hora.get().strip()
         tempo = dt.datetime.strptime(tempo_bruto, '%H:%M')
-        monitoradas.tempo_exibido = monitoradas.data_atual.replace(hour=tempo.hour, minute=tempo.minute)
+        monitoradas.tempo_exibido = monitoradas.data_atual.replace(
+            hour=tempo.hour, minute=tempo.minute)
         if monitoradas.data_atual > monitoradas.tempo_exibido:
             monitoradas.tempo_exibido += dt.timedelta(1)
     except ValueError:
         chave = 'data_invalida'
     monitoradas.tempo_formatado.set(fm.form_tempo(monitoradas.tempo_exibido))
     return chave
+
 
 def atualizar_relogio(app):
     '''
@@ -72,7 +75,7 @@ def atualizar_relogio(app):
     monitoradas.data_atual = data_atual
 
     linhas = app.linhas
-    
+
     # horarios_linhas nos dá um conjunto (set) de ids de linhas no horário especificado como chave
     for linha in estado.horarios_linhas.get(data_previa.hour*60 + data_previa.minute, []):
         # baseado no id da linha e na data anterior (que expirou)
@@ -86,23 +89,26 @@ def atualizar_relogio(app):
             update_action(app, 'Partida')  # sinalizamos a ação
         else:
             estado.onibus_invisiveis.discard(onibus)
-        linhas.delete(onibus) # removemos o ônibus
+        linhas.delete(onibus)  # removemos o ônibus
         # modificar estado para que a remoção seja persistente
         del estado.linhas_entradas[linha].onibus[onibus]
-    data_maxima = data_atual + dt.timedelta(cte.MAXIMO_NUMERO_DE_DIAS_ATE_RESERVA)
+    data_maxima = data_atual + \
+        dt.timedelta(cte.MAXIMO_NUMERO_DE_DIAS_ATE_RESERVA)
     for linha in estado.horarios_linhas.get(data_maxima.hour*60 + data_maxima.minute, []):
         # vamos adicionar 1 ônibus para cada linha no horário atualizado,
         # que partirá daqui a 15 dias (intervalo maximo para reserva)
         onibus = gerar_id_onibus(linha, data_maxima)
         vagas = 2*estado.linhas_entradas[linha].fileiras
         estado.linhas_entradas[linha].onibus[onibus] = dict()
-        linhas.insert(parent=linha, index='end', values=('-', fm.form_data(data_maxima), vagas, '-'), iid=onibus)
+        linhas.insert(parent=linha, index='end', values=(
+            '-', fm.form_data(data_maxima), vagas, '-'), iid=onibus)
 
         if linha in estado.linhas_visiveis:
             monitoradas.onibus_visiveis.add(onibus)
             update_action(app, 'Chegada')
-    
-    app.contador_onibus['text'] = fm.form_cont_onibus(len(monitoradas.onibus_visiveis))
+
+    app.contador_onibus['text'] = fm.form_cont_onibus(
+        len(monitoradas.onibus_visiveis))
 
     if data_atual > monitoradas.tempo_exibido:
         monitoradas.tempo_exibido += dt.timedelta(1)

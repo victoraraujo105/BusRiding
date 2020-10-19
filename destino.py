@@ -1,7 +1,7 @@
-import estado 
+import estado
 import formatar as fm
 import monitoradas
-import mount
+
 
 def atualizar_destino(evento=None):
     chave = None
@@ -51,11 +51,11 @@ def rmv_destino(app, evento=None):
     if texto in estado.destinos:
         i = estado.destinos.index(texto)
         del estado.destinos[i]
-        estado.linhas_possiveis.difference_update({(texto, t) for t in range(1440)})
+        estado.linhas_possiveis.difference_update(
+            {(texto, t) for t in range(1440)})
         app.entrada_destino['values'] = estado.destinos
     if estado.destinos == []:
         destino.set('')
     else:
         destino.set(estado.destinos[0])
     monitoradas.texto_anterior = destino.get()
-    
