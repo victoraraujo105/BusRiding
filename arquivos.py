@@ -436,10 +436,8 @@ def csv_to_linha(app, linha, data_atual=monitoradas.data_atual):
 
     linha = gerar_id_linha(campus, horario)
     if linha in estado.linhas_visiveis:
-        # criá-la?
         return type('', (), {'validez': False, 'texto': 'linha existente'})
     elif linha in estado.linhas_entradas:
-        # habilitá-la?
         return type('', (), {'validez': False, 'texto': 'linha desabilitada'})
 
     atributos = {'validez': True, 'texto': 'Ok', 'id': linha, 'campus': campus,

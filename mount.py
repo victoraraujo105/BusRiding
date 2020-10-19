@@ -227,7 +227,7 @@ class App(object):
         self.root.protocol("WM_DELETE_WINDOW", lambda: estado.persistir(self))
 
         self.botao_remover = ttk.Button(
-            self.painel_botoes, text='Remover')  # set width? maxwidth
+            self.painel_botoes, text='Remover')
         self.botao_remover.bind(
             '<ButtonPress>', lambda ev: util.remover_linhas(self, ev))
         self.botao_remover.bind('<ButtonRelease>', util.released)
