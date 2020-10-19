@@ -349,14 +349,17 @@ def unbook(app, reserva):
     onibus = reserva[:-6]
     linha = onibus[:-7]
 
-    del estado.linhas_entradas[linha].onibus[onibus][decodificar_id_reserva(
-        reserva).assento]
+    if onibus in estado.linhas_entradas[linha].onibus:
+        del estado.linhas_entradas[linha].onibus[onibus][decodificar_id_reserva(
+            reserva).assento]
 
-    prev_values = app.linhas.set(onibus)
-    prev_values['assentos livres'] = int(prev_values['assentos livres']) + 1
-    app.linhas.see(onibus)
-    app.linhas.selection_set(onibus)
-    app.linhas.item(onibus, values=tuple(prev_values.values()))
+        prev_values = app.linhas.set(onibus)
+        prev_values['assentos livres'] = int(
+            prev_values['assentos livres']) + 1
+        app.linhas.see(onibus)
+        app.linhas.selection_set(onibus)
+        app.linhas.item(onibus, values=tuple(prev_values.values()))
+    
     app.contador_reservas['text'] = fm.form_cont_reservas(len(estado.reservas))
     return 1
 
@@ -372,15 +375,18 @@ def rebook(app, reserva):
 
     onibus = reserva[:-6]
     linha = onibus[:-7]
-    info_reserva = decodificar_id_reserva(reserva)
-    assento, passagem = info_reserva.assento, info_reserva.passagem.tipo
-    estado.linhas_entradas[linha].onibus[onibus][assento] = passagem
+    if onibus in estado.linhas_entradas[linha].onibus:
+        info_reserva = decodificar_id_reserva(reserva)
+        assento, passagem = info_reserva.assento, info_reserva.passagem.tipo
+        estado.linhas_entradas[linha].onibus[onibus][assento] = passagem
 
-    prev_values = app.linhas.set(onibus)
-    prev_values['assentos livres'] = int(prev_values['assentos livres']) - 1
-    app.linhas.see(onibus)
-    app.linhas.selection_set(onibus)
-    app.linhas.item(onibus, values=tuple(prev_values.values()))
+        prev_values = app.linhas.set(onibus)
+        prev_values['assentos livres'] = int(
+            prev_values['assentos livres']) - 1
+        app.linhas.see(onibus)
+        app.linhas.selection_set(onibus)
+        app.linhas.item(onibus, values=tuple(prev_values.values()))
+    
     app.contador_reservas['text'] = fm.form_cont_reservas(len(estado.reservas))
     return 1
 
@@ -399,16 +405,17 @@ def rereservar_reservas(app, reservas):
 
         onibus = reserva[:-6]
         linha = onibus[:-7]
-        info_reserva = decodificar_id_reserva(reserva)
-        assento, passagem = info_reserva.assento, info_reserva.passagem.tipo
-        estado.linhas_entradas[linha].onibus[onibus][assento] = passagem
+        if onibus in estado.linhas_entradas[linha].onibus:
+            info_reserva = decodificar_id_reserva(reserva)
+            assento, passagem = info_reserva.assento, info_reserva.passagem.tipo
+            estado.linhas_entradas[linha].onibus[onibus][assento] = passagem
 
-        prev_values = app.linhas.set(onibus)
-        prev_values['assentos livres'] = int(
-            prev_values['assentos livres']) - 1
-        app.linhas.see(onibus)
-        app.linhas.selection_add(onibus)
-        app.linhas.item(onibus, values=tuple(prev_values.values()))
+            prev_values = app.linhas.set(onibus)
+            prev_values['assentos livres'] = int(
+                prev_values['assentos livres']) - 1
+            app.linhas.see(onibus)
+            app.linhas.selection_add(onibus)
+            app.linhas.item(onibus, values=tuple(prev_values.values()))
         actions += 1
 
     app.contador_reservas['text'] = fm.form_cont_reservas(len(estado.reservas))
@@ -426,15 +433,16 @@ def devolver_reservas(app, reservas):
         onibus = reserva[:-6]
         linha = onibus[:-7]
 
-        del estado.linhas_entradas[linha].onibus[onibus][decodificar_id_reserva(
-            reserva).assento]
+        if onibus in estado.linhas_entradas[linha].onibus:
+            del estado.linhas_entradas[linha].onibus[onibus][decodificar_id_reserva(
+                reserva).assento]
 
-        prev_values = app.linhas.set(onibus)
-        prev_values['assentos livres'] = int(
-            prev_values['assentos livres']) + 1
-        app.linhas.see(onibus)
-        app.linhas.selection_add(onibus)
-        app.linhas.item(onibus, values=tuple(prev_values.values()))
+            prev_values = app.linhas.set(onibus)
+            prev_values['assentos livres'] = int(
+                prev_values['assentos livres']) + 1
+            app.linhas.see(onibus)
+            app.linhas.selection_add(onibus)
+            app.linhas.item(onibus, values=tuple(prev_values.values()))
 
         actions += 1
 
