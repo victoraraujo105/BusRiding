@@ -7,7 +7,7 @@
 '''
 
 import tkinter as tk
-import ttk
+from tkinter import ttk
 import constantes as cte
 import monitoradas
 import util
@@ -21,6 +21,15 @@ import gerar
 import formatar as fm
 import arquivos as arq
 import relatorio as rel
+
+
+class Spinbox(ttk.Entry):
+    def __init__(self, master=None, **kw):
+
+        ttk.Entry.__init__(self, master, "ttk::spinbox", **kw)
+
+    def set(self, value):
+        self.tk.call(self._w, "set", value)
 
 
 class App(object):
@@ -180,7 +189,7 @@ class App(object):
             self.painel_destino, command=lambda: dest.rmv_destino(self), text='-', width=2)
         self.botao_rmv_destino.grid(row=0, column=1, sticky='w')
 
-        self.spin_hora = ttk.Spinbox(
+        self.spin_hora = Spinbox(
             self.painel_entrada, textvariable=monitoradas.tempo_formatado, justify='center', width=6)
         self.spin_hora.bind(
             '<<Increment>>', lambda e: date.increment(self, cte.MIN))
@@ -189,7 +198,7 @@ class App(object):
         self.spin_hora.bind('<Return>', lambda e: date.update(self))
         self.spin_hora.grid(row=0, column=1, sticky='', padx=(0, 30))
 
-        self.spin_vagas = ttk.Spinbox(
+        self.spin_vagas = Spinbox(
             self.painel_entrada, textvariable=monitoradas.vagas, justify='center', width=4)
         self.spin_vagas.bind('<<Increment>>', vg.incrementar_vagas)
         self.spin_vagas.bind('<<Decrement>>', vg.decrementar_vagas)
@@ -205,7 +214,7 @@ class App(object):
                                text='R$', width=4, anchor='center')
         self.reais.grid(row=0, column=0, sticky='e')
 
-        self.spin_inteira = ttk.Spinbox(
+        self.spin_inteira = Spinbox(
             self.painel_inteira, textvariable=monitoradas.inteira, justify='center', width=5)
         self.spin_inteira.bind('<<Increment>>', it.incrementar_inteira)
         self.spin_inteira.bind('<<Decrement>>', it.decrementar_inteira)

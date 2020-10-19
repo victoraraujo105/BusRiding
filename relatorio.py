@@ -3,8 +3,7 @@
 '''
 
 import tkinter as tk
-from tkinter import filedialog
-import ttk
+from tkinter import filedialog, ttk
 import estado
 from gerar import decodificar_id_reserva, decodificar_id_onibus
 import inteira as it

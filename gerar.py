@@ -3,8 +3,7 @@
 '''
 
 import tkinter as tk
-from tkinter import messagebox
-import ttk
+from tkinter import messagebox, ttk
 import datetime as dt
 import monitoradas
 import formatar as fm
@@ -14,6 +13,7 @@ import constantes as cte
 import control as ctrl
 import estado
 from collections import namedtuple
+import mount
 
 
 def minutos_dia(momento):
@@ -253,7 +253,7 @@ def gerar_linhas(app):
         return 'break'
 
     # esse é o spinbox ao qual as funções acima se referem
-    spin_linhas = ttk.Spinbox(frame,
+    spin_linhas = mount.Spinbox(frame,
                               textvariable=num,
                               width=6,
                               justify='center')

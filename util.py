@@ -3,8 +3,7 @@
 '''
 
 import tkinter as tk
-import ttk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import estado
 import monitoradas
 import gerar

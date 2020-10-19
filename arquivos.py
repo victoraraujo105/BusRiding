@@ -10,8 +10,7 @@ import inteira as it
 import datetime as dt
 from gerar import minutos_dia, decodificar_id_reserva, gerar_id_linha, gerar_id_onibus, gerar_id_reserva, coordenadas_assento, assento_coordenadas
 import tkinter as tk
-from tkinter import filedialog
-import ttk
+from tkinter import filedialog, ttk
 import ntpath
 import util
 
