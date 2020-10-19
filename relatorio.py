@@ -53,6 +53,8 @@ def exibir_relatorio(app):
 
     distribuicao_passageiros = [0, 0, 0]    # [gratuita, meia, inteira]
     linha_dia_reservas = dict()
+    monitoradas.arrecadado = dict()
+    monitoradas.ocupacao_media_semanal = dict()
 
     total_passageiros = len(estado.reservas)
 
