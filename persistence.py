@@ -5,6 +5,7 @@
 
 import pickle as pkl
 
+
 def retrieve_data(path):
     '''
         Retorna o objeto salvo no caminho especificado (path).
@@ -16,13 +17,10 @@ def retrieve_data(path):
     except:
         return
 
+
 def save_data(data, path):
     '''
         Salva os dados (data) no caminho especificado (path).
     '''
     with open(path, 'wb') as f:
         pkl.dump(data, f)
-
-        
-
-        

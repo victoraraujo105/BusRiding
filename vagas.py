@@ -10,7 +10,10 @@ vagas = monitoradas.vagas
 # índice 1 se refere à quantidade 4
 # índice 2 se refere à quantidade 6
 # indice i se refere à (2 + 2 * i)
-vagas_termo = lambda n: 2 + 2*n
+
+
+def vagas_termo(n): return 2 + 2*n
+
 
 def incrementar_vagas(evento=None):
     '''
@@ -23,6 +26,7 @@ def incrementar_vagas(evento=None):
     # o valor de retorno sinaliza ao sistema de eventos que a propagação desse evento deve parar aqui
     return 'break'
 
+
 def decrementar_vagas(evento=None):
     '''
         Diminui a quantidade de vagas em 2.
@@ -33,6 +37,7 @@ def decrementar_vagas(evento=None):
     vagas.set(vagas_termo(monitoradas.indice_vagas))
     # o valor de retorno sinaliza ao sistema de eventos que a propagação desse evento deve parar aqui
     return 'break'
+
 
 def atualizar_vagas(evento=None):
     chave = 'vagas_invalida'

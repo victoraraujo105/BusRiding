@@ -12,7 +12,6 @@
 '''
 
 import tkinter as tk
-import ttk
 import datetime as dt
 import constantes as cte
 import formatar as fm
@@ -24,15 +23,18 @@ _agora = dt.datetime.today()
 
 data_atual = _agora
 tempo_exibido = _agora
-tempo_formatado = tk.StringVar()  # texto do widget que contém o horário (para cadastro/edição de linhas)
+# texto do widget que contém o horário (para cadastro/edição de linhas)
+tempo_formatado = tk.StringVar()
 # last_call é o horário da última ação realizada (utilizado para remover automaticamente o texto após 1 segundo,
 # veja update_actions em control.py para mais informações)
 last_call = dt.datetime.today()
 vagas = tk.StringVar()  # texto do widget que contém quantidade de vagas
-indice_vagas = cte.MAXIMO_NUMERO_DE_FILEIRAS - 1  # veja o módulo vagas.py para explicação
+indice_vagas = cte.MAXIMO_NUMERO_DE_FILEIRAS - \
+    1  # veja o módulo vagas.py para explicação
 inteira = tk.StringVar()  # texto do widget que contém o preço da passagem inteira
 indice_inteira = 60  # veja o módulo inteira.py para explicação
-cur_action = tk.StringVar()  # texto do widget que contém o texto da atual ação (veja update_actions em control.py)
+# texto do widget que contém o texto da atual ação (veja update_actions em control.py)
+cur_action = tk.StringVar()
 destino = tk.StringVar()  # atual destino selecionado no widget
 # O texto do último destino selecionado. Utilizado quando o usuário digita um destino inválido
 # e queremos alterar o valor do widget para o último texto válido.
@@ -46,15 +48,16 @@ previous_selection = set()
 pressed = False
 num_entradas = 0
 ocupar_assentos = tk.IntVar(value=0)
-indice_linhas_geradas = 49 
+indice_linhas_geradas = 49
 janela_reservas = None
 
 onibus_visiveis = set()     # ids dos ônibus habilitados q ainda não partiram
 arrecadado = dict()
-ocupacao_media_semanal = dict() # linha: lista cujos índices representam dias da semana, 0 é domingo
+# linha: lista cujos índices representam dias da semana, 0 é domingo
+ocupacao_media_semanal = dict()
 
 tempo_formatado.set(fm.form_tempo(tempo_exibido))
 vagas.set(str(2 * (indice_vagas + 1)))
-inteira.set('%.2f' %(3 + indice_inteira*.01))
+inteira.set('%.2f' % (3 + indice_inteira*.01))
 cur_action.set('')
 destino.set(texto_anterior)

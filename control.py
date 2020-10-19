@@ -5,7 +5,6 @@
 import datetime as dt
 import monitoradas
 import constantes as cte
-import mount
 
 
 def update_action(app, action=None):
